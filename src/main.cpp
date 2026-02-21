@@ -1,16 +1,52 @@
 #include <iostream>
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
-    auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+#include "Dataset.h"
+#include "fvecs_reader.h"
+#include "kNN.h"
 
-    for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
+void test_sequential_case(int k);
+
+int main() {
+    test_sequential_case(10);
+    test_sequential_case(100);
+    test_sequential_case(1000);
+}
+
+void test_sequential_case(int k) {
+    std::cout << "\n*** Testing sequential case for k=" << k << " ***" << std::endl;
+
+    auto filename = "../data/siftsmall/siftsmall_base.fvecs";
+    int dim, num;
+    auto vectors = fvecs_read(filename, &dim, &num);
+
+    if (!vectors) {
+        std::cerr << "Error reading file " << filename << std::endl;
+        return;
     }
 
-    return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
+    Dataset dataset(vectors, num, dim);
+
+    auto query_indices = {0,100,200,500,1000};
+
+    auto start_total_time = std::chrono::high_resolution_clock::now();
+    for (auto idx : query_indices) {
+        auto query = dataset.getVector(idx);
+        auto start = std::chrono::high_resolution_clock::now();
+        auto query_result = knnQuery(dataset, query, k);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        auto partial_time = std::chrono::duration_cast<std::chrono::microseconds>
+        (end - start).count() / 1000.0;
+
+        std::cout << idx << " " << partial_time << " microseconds" << std::endl;
+    }
+
+    auto end_total_time = std::chrono::high_resolution_clock::now();
+    auto total_time = std::chrono::duration_cast<std::chrono::microseconds>
+    (end_total_time - start_total_time).count() / 1000.0;
+
+    std::cout << "Total time: " << total_time << " microseconds" << std::endl;
+    std::cout << "Mean time: " << total_time / query_indices.size() << " microseconds" << std::endl;
+
+    delete[] vectors;
 }

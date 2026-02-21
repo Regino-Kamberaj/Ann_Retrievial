@@ -4,7 +4,7 @@
 
 #include <iomanip>
 #include <iostream>
-#include "fvecs_reader.h"
+#include "../libraries/fvecs_reader/fvecs_reader.h"
 
 int main() {
     auto filename = "/Users/regino_kamberaj/ClionProjects/Ann_Retrievial/data/siftsmall/siftsmall_base.fvecs";
