@@ -5,14 +5,14 @@
 #include "Dataset.h"
 
 Dataset::Dataset(float *data, int num, int dim)
-    : data(data), n_vectors(num), dim(dim) {}
+    : data(data), num_vectors(num), dim(dim) {}
 
 const float *Dataset::getVector(int i) const {
     return &data[i*dim];
 }
 
-int Dataset::getN() const {
-    return n_vectors;
+int Dataset::get_num_vectors() const {
+    return num_vectors;
 }
 
 int Dataset::getDim() const {

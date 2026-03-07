@@ -11,14 +11,14 @@
 class Dataset {
 private:
     float* data;
-    int n_vectors;
+    int num_vectors;
     int dim;
 
 public:
     Dataset(float* data, int num, int dim);
 
     const float* getVector(int i) const;
-    int getN() const;
+    int get_num_vectors() const;
     int getDim() const;
 };
 

@@ -8,23 +8,23 @@
 #include <iostream>
 
 inline float* fvecs_read(const char* filename, int* dim_out, int* n_out) {
-    FILE* file = fopen(filename, "rb");
+    FILE* file = fopen(filename, "rb"); // read binary
 
     if (!file) {
         std::cerr << "ERROR: Could not open file " << filename << std::endl;
         return nullptr;
     }
 
-    // Leggo la dimensione del primo vettore
+    // Leggo la dimensione dei vettori -> coppie dim, dati
     int dim;
-    fread(&dim, sizeof(int), 1, file);
+    fread(&dim, sizeof(int), 1, file); // leggo i primi 4 byte
 
     // Calcolo la dimensione totale del file
     fseek(file, 0, SEEK_END);
-    auto file_size = ftell(file);
+    auto file_size = ftell(file); // mi calcola quanti byte ci sono da inizio a fine
     fseek(file, 0, SEEK_SET);
 
-    auto vector_size_bytes = sizeof(int) + dim * sizeof(float);
+    auto vector_size_bytes = sizeof(int) + dim * sizeof(float); // dovrebbe essere 516 per vettore
     auto n = file_size / vector_size_bytes;
 
     std::cout << "File: " << filename << std::endl;
@@ -36,7 +36,7 @@ inline float* fvecs_read(const char* filename, int* dim_out, int* n_out) {
     // Alloco memoria per tutti i vettori
     auto data = new float[n * dim];
 
-    // Leggo tutti i vettori
+    // Leggo tutti i vettori (tramite fread il ptr al file si aggiorna in automatico)
     for (int i = 0; i < n; i++) {
         int header;
         auto read_header = fread(&header, sizeof(int), 1, file);
