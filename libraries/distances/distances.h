@@ -8,5 +8,9 @@
 float euclideanSquared(const float* a, const float* b, int dim);
 float euclideanDistance(const float* a, const float* b, int dim);
 
+float manhattanDistance(const float* a, const float* b, int dim);
 
+float dotProduct(const float* a, const float* b, int dim);
+float norm(const float* a, int dim);
+float cosineDistance(const float* a, const float* b, int dim);
 #endif //ANN_RETRIEVIAL_DISTANCES_H

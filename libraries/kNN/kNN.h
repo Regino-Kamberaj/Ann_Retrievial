@@ -17,7 +17,15 @@ struct Neighbor {
         return distance < other.distance;
     }
 };
+enum DistanceMetric {
+    Euclidean,
+    Manhattan,
+    Cosine,
+};
 
-std::vector<Neighbor> knnQuery(const Dataset& db, const float* query, int k);
+char* metricToString(DistanceMetric metric);
+
+std::vector<Neighbor> knnQuery(const Dataset& db, const float* query, int k, DistanceMetric metric);
+float getDistance(const float* a, const float* b, int dim, DistanceMetric metric);
 
 #endif //ANN_RETRIEVIAL_KNN_H

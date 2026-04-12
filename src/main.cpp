@@ -4,23 +4,20 @@
 #include "fvecs_reader.h"
 #include "kNN.h"
 
-void test_sequential_case(int k, bool skip_print = false);
+void test_sequential_case(int num_queries, DistanceMetric metric = Euclidean, bool skip_print = true);
+
 
 int main() {
-    test_sequential_case(10);
-    test_sequential_case(20);
-    test_sequential_case(50);
-    test_sequential_case(100, true);
-    test_sequential_case(200, true);
-    test_sequential_case(1000, true);
-    test_sequential_case(10000, true);
+    auto num_queries = 1000;
+    test_sequential_case(num_queries);
+    test_sequential_case(num_queries, Manhattan);
+    test_sequential_case(num_queries, Cosine);
 }
 
-void test_sequential_case(int num_queries, bool skip_print) {
-    auto k = 10;
-    std::cout << "\n*** Testing sequential case for k=" << k
-    << " and for " << num_queries << " queries ***" << std::endl;
 
+void test_sequential_case(int num_queries, DistanceMetric metric, bool skip_print) {
+    std::cout << "\n*** Testing metric: " << metricToString(metric) << " ***\n" << std::endl;
+    int k = 10;
     auto filename = "../data/siftsmall/siftsmall_base.fvecs";
     int dim, num_vectors;
     auto vectors = fvecs_read(filename, &dim, &num_vectors);
@@ -42,7 +39,7 @@ void test_sequential_case(int num_queries, bool skip_print) {
     for (auto idx : query_indices) {
         auto query = dataset.getVector(idx);
         auto start = std::chrono::high_resolution_clock::now();
-        auto query_result = knnQuery(dataset, query, k);
+        auto query_result = knnQuery(dataset, query, k, DistanceMetric::Euclidean);
         auto end = std::chrono::high_resolution_clock::now();
 
         auto partial_time = std::chrono::duration_cast<std::chrono::microseconds>
