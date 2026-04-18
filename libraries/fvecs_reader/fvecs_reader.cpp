@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <iostream>
 
-inline float* fvecs_read(const char* filename, int* dim_out, int* n_out) {
+float* fvecs_read(const char* filename, int* dim_out, int* n_out) {
     FILE* file = fopen(filename, "rb"); // read binary
 
     if (!file) {
@@ -82,7 +82,7 @@ std::vector<float> fvecs_read_vector(const char* filename, int* dim_out) {
     return result;
 }
 
-inline int* ivecs_read(const char* filename, int* dim_out, int* n_out) {
+int* ivecs_read(const char* filename, int* dim_out, int* n_out) {
     FILE* file = fopen(filename, "rb");
 
     if (!file) {

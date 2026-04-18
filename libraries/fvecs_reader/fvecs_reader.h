@@ -17,12 +17,12 @@ extern "C" {
  * @param n_out numero di vettori in output
  * @return puntatore ad un array di floats, oppure nullptr se errato
  */
-inline float* fvecs_read(const char* filename, int* dim_out, int* n_out);
+float* fvecs_read(const char* filename, int* dim_out, int* n_out);
 
 /**
  * Leggo file .ivecs (stesso formato ma con interi)
  */
-inline int* ivecs_read(const char* filename, int* dim_out, int* n_out);
+int* ivecs_read(const char* filename, int* dim_out, int* n_out);
 
 std::vector<float> fvecs_read_vector(const char* filename, int* dim_out);
 
