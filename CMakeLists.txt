@@ -4,6 +4,23 @@ project(Ann_Retrievial)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lomp")
+    # Get Homebrew home directory
+    execute_process(
+            COMMAND brew --prefix
+            OUTPUT_VARIABLE HOMEBREW_PREFIX
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    # The following 2 lines are needed on macOS.
+    # Check the position of headers in libraries (e.g. Macports vs. Homebrew)
+    include_directories(${HOMEBREW_PREFIX}/opt/libomp/include)
+    link_directories(${HOMEBREW_PREFIX}/opt/libomp/lib)
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+endif()
+
 # ==============================================
 # Libraries
 # ==============================================
@@ -27,6 +44,7 @@ target_link_libraries(dataset PRIVATE fvecs_reader)
 
 add_library(knn STATIC
         libraries/kNN/kNN.cpp
+        libraries/kNN/knn_parallel.cpp
 )
 target_include_directories(knn PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/kNN)
@@ -75,6 +93,20 @@ target_link_libraries(Test_Accuracy PRIVATE
         fvecs_reader distances dataset knn
 )
 target_include_directories(Test_Accuracy PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/libraries/fvecs_reader
+        ${CMAKE_CURRENT_SOURCE_DIR}/libraries/distances
+        ${CMAKE_CURRENT_SOURCE_DIR}/libraries/dataset
+        ${CMAKE_CURRENT_SOURCE_DIR}/libraries/knn
+)
+
+# ==============================================
+# Test_Parallel
+# ==============================================
+add_executable(Test_Parallel src/test_parallel.cpp)
+target_link_libraries(Test_Parallel PRIVATE
+        fvecs_reader distances dataset knn
+)
+target_include_directories(Test_Parallel PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/fvecs_reader
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/distances
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/dataset
