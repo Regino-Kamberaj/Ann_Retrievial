@@ -26,7 +26,7 @@ endif()
 # ==============================================
 add_library(dataset STATIC
         libraries/dataset/dataset.cpp
-        libraries/dataset/dataset_soa.cpp
+        libraries/dataset/SoADataset.cpp
 )
 target_include_directories(dataset PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/dataset)
@@ -34,7 +34,6 @@ target_link_libraries(dataset PRIVATE fvecs_reader)
 
 add_library(distances STATIC
         libraries/distances/distances.cpp
-        libraries/distances/distances_soa.cpp
 )
 target_include_directories(distances PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/libraries/distances)
